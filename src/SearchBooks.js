@@ -1,12 +1,74 @@
 import React,{Component} from 'react';
 import {Link} from 'react-router-dom'
+import {search,getAll} from './BooksAPI'
+import SearchResults from './SearchResults';
 
-class SearchBooks extends Component{
-state = {
+const initialState = {
+  books: [],
+  noResults: false,
+  booksToSetStatus: [],
+  query: ""
+};
 
-}
+class SearchBooks extends Component {
+
+
+  constructor(props) {
+    super(props);
+    this.state = { ...initialState };
+  }
+
+  async componentDidMount() {
+    const { booksOnShelf } = this.props;
+    if (booksOnShelf.length === 0) {
+        const books = await getAll();
+        this.setBooksToSetStatus([...books]);
+    } else {
+      this.setBooksToSetStatus([...booksOnShelf]);
+    }
+  }
+
+  setBooksToSetStatus = booksToSetStatus => {
+    this.setState({
+      booksToSetStatus
+    });
+  };
+
+  search = query => {
+    this.setState(
+      {
+        query: query
+      },
+       async () => {
+        try{  
+        const results = await search(query.trim());
+          this.setState(() => {
+            if (results !== undefined && !results.error) {
+              return {
+                books: results.filter(book =>
+                  this.state.booksToSetStatus.map(shelfBook => {
+                    if (shelfBook.id === book.id) {
+                      return (book.shelf = shelfBook.shelf);
+                    }
+                    return book;
+                  })
+                ),
+                noResults: false
+              };
+            }
+            return {
+              books: [],
+              noResults: true
+            };
+          });
+        }catch(error){console.log('error',error)}
+      }
+    );
+  };
+
     render(){
-        
+      const { books, noResults, query } = this.state;
+      console.log("BOOK",books)  
         return(
             <div className="app">
             <div className="search-books">
@@ -21,33 +83,24 @@ state = {
                     However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                     you don't find a specific author or title. Every search is limited by search terms.
                   */}
-                  <input type="text" placeholder="Search by title or author" value={this.state.text}/>
+                   <input
+              type="text"
+              value={query}
+              onChange={e => this.search(e.target.value)}
+              placeholder="Search by title or author"
+            />
   
                 </div>
               </div>
               <div className="search-books-results">
-                {/* <ol className="books-grid">
-                {this.props.books.map((book)=>{
-                return (<li>
-                        <div className="book">
-                          <div className="book-top">
-                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: '{book.imagelinks}'}}></div>
-                            <div className="book-shelf-changer">
-                              <select>
-                                <option value="move" disabled>Move to...</option>
-                                <option value="currentlyReading">Currently Reading</option>
-                                <option value="wantToRead">Want to Read</option>
-                                <option value="read">Read</option>
-                                <option value="none">None</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div className="book-title">book.title</div>
-                          <div className="book-authors">book.authors</div>
-                        </div>
-                      </li>)
-    })}
-                </ol> */}
+              {noResults && query !== "" ? (
+            <p className="no-results">No results found...</p>
+          ) : (
+                <ol className="books-grid">
+                <SearchResults bookTransfer={this.props.bookTransfer} books={books} />
+                </ol>
+                )
+    } 
               </div>
             </div>
           </div>

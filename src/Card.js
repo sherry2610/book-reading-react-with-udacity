@@ -18,7 +18,7 @@ const Card = (props) => {
                 }}
               ></div>
               <div className="book-shelf-changer">
-                <select value={props.book.shelf} onChange={(event)=>props.bookTransfer(props.book,event.target.value,props.book.shelf||'none')}>
+                <select value={props.book.shelf} onChange={(e)=>props.bookTransfer(props.book,e.target.value,props.shelf)}>
                   <option value="move" disabled>
                     Move to...
                   </option>
@@ -30,7 +30,10 @@ const Card = (props) => {
               </div>
             </div>
             <div className="book-title">{props.book.title}</div>
-            <div className="book-authors">{props.book.authors.map(author=>{return author})}</div>
+            {props.book.authors.map(author=>(
+            <div key={author} className="book-authors">
+              {author}
+            </div>))}
           </div>
         </li>
   );

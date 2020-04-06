@@ -7,7 +7,6 @@ class BookShelf extends Component {
     const { current, want, read } = this.props.booksOnShelf;
     return (
       <div className="app">
-        
         <div className="list-books">
           <div className="list-books-title">
             <h1>MyReads</h1>
