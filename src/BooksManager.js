@@ -1,9 +1,11 @@
 import React from 'react';
-import * as BooksAPI from './BooksAPI'
+import {update,getAll} from './BooksAPI'
 import SearchBooks from './SearchBooks';
 import BookShelf from './BookShelf';
 import {Route} from 'react-router-dom'
-//import {updateNewShelf,removeOldShelf} from './functionRoom'
+import {updateNewShelf,removeOldShelf} from './functionRoom'
+
+
 
 class BooksManager extends React.Component{
   state={
@@ -12,48 +14,62 @@ class BooksManager extends React.Component{
     want:[],
     read:[],
     }
+    
 
-// bookTransfer = (book,newShelf,oldShelf) =>{
-//   const {current,want,read,books} = this.state;
-// updateNewShelf(current,want,read,books,newShelf);
-// removeOldShelf(current,want,read,books,newShelf)
-// }    
-    async componentDidMount(){
-      const {current,want,read} = this.state;
-      //console.log(books)
-      const b = await BooksAPI.getAll()
-        .then((book)=>{
-          this.setState({books:book})  
-          return book;
-        });
+getData=async ()=>{
+  const {current,want,read} = this.state;
+
+      const Books = await getAll();
       
-      //console.log("before",this.state)
-      b.forEach(b=>{
-        if(b.shelf==="currentlyReading"){
-          current.push(b);
-          this.setState({current})
+      Books.forEach(book => {
+        switch (book.shelf) {
+          case "currentlyReading":
+            current.push(book);
+            break;
+          case "wantToRead":
+            want.push(book);
+            break;
+          case "read":
+            read.push(book);
+            break;
+          default:
+            break;
         }
-      if(b.shelf==="wantToRead"){
-        want.push(b);
-        this.setState({want})
-      }
-      if(b.shelf==="read"){
-        read.push(b);
-        this.setState({read})
-      }
-      })
-      //console.log("after",this.state)
+      });
+      this.setState({
+        current,
+        want,
+        read
+      });
+}
+
+
+    componentDidMount(){
+      this.getData()
     }
     
+
+    bookTransfer = async (book,newShelf,oldShelf) =>{
+      const {current,want,read} = this.state;
+      updateNewShelf(current,want,read,book,newShelf);
+      removeOldShelf(current,want,read,book,oldShelf);
+      this.setState({
+        current,
+        want,
+        read
+      })
+      //TODO:update server
+      await update(book,newShelf)
       
+      }          
 render(){
     
   const {current,want,read,books} = this.state;
     return (
     <div>
       
-    <Route exact path="/" ><BookShelf booksOnShelf={{current,want,read}}/></Route>
-    <Route path="/search" ><SearchBooks books={books}/></Route>
+    <Route exact path="/" ><BookShelf booksOnShelf={{current,want,read,books}} bookTransfer={this.bookTransfer} shelfHeading={["Currently Reading","Want To Read","Read"]}/></Route>
+    <Route path="/search" ><SearchBooks books={books} bookTransfer={this.bookTransfer}/></Route>
     </div> 
     
     )

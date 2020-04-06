@@ -1,3 +1,6 @@
+
+
+
 export const updateNewShelf = (current, want, read, book, newShelf) => {
   book.shelf = newShelf;
   switch (newShelf) {
@@ -18,13 +21,13 @@ export const updateNewShelf = (current, want, read, book, newShelf) => {
 export const removeOldShelf = (current, want, read, book, oldShelf) => {
     switch (oldShelf) {
         case "currentlyReading":
-          current.splice(book.map(b=>b.id).indexOf(book.id),1);
+          current.splice(current.map(b=>b.id).indexOf(book.id),1);
           break;
         case "wantToRead":
-          want.splice(book.map(b=>b.id).indexOf(book.id),1);
+          want.splice(want.map(b=>b.id).indexOf(book.id),1);
           break;
         case "read":
-          read.splice(book.map(b=>b.id).indexOf(book.id),1);
+          read.splice(read.map(b=>b.id).indexOf(book.id),1);
           break;
         default:
           break;

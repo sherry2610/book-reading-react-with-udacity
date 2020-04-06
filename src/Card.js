@@ -1,22 +1,24 @@
 import React from "react";
 
+const imageNotFound = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/No_image_available_450_x_600.svg/768px-No_image_available_450_x_600.svg.png";
+
 const Card = (props) => {
    
   return (
-        <li key={props.book.id}>
+        <li key={props.book.title}>
           <div className="book">
             <div className="book-top">
+            
               <div
                 className="book-cover"
                 style={{
                   width: 128,
                   height: 193,
-                  backgroundImage:
-                    `url(${props.book.imageLinks.smallThumbnail}`,
+                  backgroundImage:props.book.imageLinks.smallThumbnail?`url(${props.book.imageLinks.smallThumbnail}`:`url(${imageNotFound}`
                 }}
               ></div>
               <div className="book-shelf-changer">
-                <select>
+                <select value={props.book.shelf} onChange={(event)=>props.bookTransfer(props.book,event.target.value,props.book.shelf||'none')}>
                   <option value="move" disabled>
                     Move to...
                   </option>
