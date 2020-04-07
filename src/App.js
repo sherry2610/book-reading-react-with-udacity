@@ -1,17 +1,11 @@
-import React from 'react'
-import './App.css'
-import BooksManager from './BooksManager'
-
+import React from "react";
+import "./App.css";
+import BooksManager from "./BooksManager";
 
 class BooksApp extends React.Component {
-  
   render() {
-    return (
-
-<BooksManager />
-
-    )
+    return <BooksManager />;
   }
 }
 
-export default BooksApp
+export default BooksApp;

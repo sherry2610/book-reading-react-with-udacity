@@ -6,12 +6,20 @@ import { Route } from "react-router-dom";
 import { updateNewShelf, removeOldShelf } from "./functionRoom";
 
 class BooksManager extends React.Component {
+  // constructor(){
+  //   super()
+  //   this.getData();
+  // }
   state = {
     books: [],
     current: [],
     want: [],
     read: [],
   };
+  componentDidMount() {
+    this.getData();
+
+  }
 
   getData = async () => {
     const { current, want, read } = this.state;
@@ -40,18 +48,14 @@ class BooksManager extends React.Component {
     });
   };
 
-  componentDidMount() {
-    this.getData();
-  }
-  bookTransfer = async(book, newShelf, oldShelf) => {
-
+ 
+  bookTransfer = async (book, newShelf, oldShelf) => {
     const { current, want, read } = this.state;
     removeOldShelf(current, want, read, book, oldShelf);
-    console.log("afterremove",this.state)
+    
     updateNewShelf(current, want, read, book, newShelf);
-    console.log("afterupdate",this.state)
     
-    
+
     this.setState({
       current,
       want,
@@ -60,13 +64,15 @@ class BooksManager extends React.Component {
     //TODO:update server
     await update(book, newShelf);
   };
+  
   render() {
-    const { current, want, read} = this.state;
+    const { current, want, read } = this.state;
+    //this.getData();
     return (
       <div>
         <Route exact path="/">
           <BookShelf
-            booksOnShelf={{ current, want, read}}
+            booksOnShelf={{ current, want, read }}
             bookTransfer={this.bookTransfer}
             shelfHeading={["Currently Reading", "Want To Read", "Read"]}
           />
@@ -74,10 +80,7 @@ class BooksManager extends React.Component {
         <Route path="/search">
           <SearchBooks
             bookTransfer={this.bookTransfer}
-            booksOnShelf={[
-              ...current,
-              ...want, 
-              ...read]}
+            booksOnShelf={[...current, ...want, ...read]}
           />
         </Route>
       </div>

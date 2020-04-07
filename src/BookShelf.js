@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Card from "./Card";
+import PropTypes from "prop-types";
 
 class BookShelf extends Component {
+  static propTypes = {
+    booksOnShelf: PropTypes.object.isRequired,
+    bookTransfer: PropTypes.func.isRequired,
+    shelfHeading: PropTypes.array.isRequired,
+  };
   render() {
     const { current, want, read } = this.props.booksOnShelf;
     return (
@@ -18,30 +24,34 @@ class BookShelf extends Component {
                   {this.props.shelfHeading[0]}
                 </h2>
 
-                <div className="bookshelf-books" key={this.props.shelfHeading[0]}>
+                <div
+                  className="bookshelf-books"
+                  key={this.props.shelfHeading[0]}
+                >
                   <ol className="books-grid">
                     {current.map((current) => (
                       <Card
                         key={current.id}
                         book={current}
-                        bid={current.id}
                         bookTransfer={this.props.bookTransfer}
                       />
                     ))}
                   </ol>
                 </div>
               </div>
-              <div className="bookshelf" >
+              <div className="bookshelf">
                 <h2 className="bookshelf-title">
                   {this.props.shelfHeading[1]}
                 </h2>
-                <div className="bookshelf-books" key={this.props.shelfHeading[1]}>
+                <div
+                  className="bookshelf-books"
+                  key={this.props.shelfHeading[1]}
+                >
                   <ol className="books-grid">
                     {want.map((want) => (
                       <Card
                         key={want.id}
                         book={want}
-                        bid={want.id}
                         bookTransfer={this.props.bookTransfer}
                       />
                     ))}
@@ -58,7 +68,6 @@ class BookShelf extends Component {
                       <Card
                         key={read.id}
                         book={read}
-                        bid={read.id}
                         bookTransfer={this.props.bookTransfer}
                       />
                     ))}
