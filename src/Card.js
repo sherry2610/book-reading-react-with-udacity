@@ -1,12 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const imageNotFound =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/No_image_available_450_x_600.svg/768px-No_image_available_450_x_600.svg.png";
-
 const Card = (props) => {
   return (
+    props?
     <li key={props.book.title}>
+      
       <div className="book">
         <div className="book-top">
           <div
@@ -14,9 +13,12 @@ const Card = (props) => {
             style={{
               width: 128,
               height: 193,
-              backgroundImage: props.book.imageLinks.smallThumbnail
-                ? `url(${props.book.imageLinks.smallThumbnail}`
-                : `url(${imageNotFound}`,
+              backgroundImage:`url(${
+                props.book.imageLinks
+                  ? props.book.imageLinks.smallThumbnail
+                  : ""
+              })`
+              
             }}
           />
           <div className="book-shelf-changer">
@@ -48,7 +50,7 @@ const Card = (props) => {
             </div>
           ))}
       </div>
-    </li>
+    </li>:'keyword is invalid'
   );
 };
 

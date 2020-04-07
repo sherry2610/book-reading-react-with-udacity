@@ -12,7 +12,6 @@ const SearchResults = ({ books, bookTransfer }) => {
               bookTransfer={bookTransfer}
               key={book.id}
               book={book}
-              shelf={book.shelf ? book.shelf : "none"}
             />
           );
         })}
